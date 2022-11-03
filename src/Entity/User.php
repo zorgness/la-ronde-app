@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -61,6 +63,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     #[Groups(['read', 'write'])]
     private ?string $phone = null;
+
+    #[ORM\OneToMany(mappedBy: 'player', targetEntity: Style::class)]
+    private Collection $styles;
+
+    #[ORM\OneToMany(mappedBy: 'player', targetEntity: Instrument::class)]
+    private Collection $instruments;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: SetList::class)]
+    private Collection $setLists;
+
+    public function __construct()
+    {
+        $this->styles = new ArrayCollection();
+        $this->instruments = new ArrayCollection();
+        $this->setLists = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -200,6 +218,96 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPhone(string $phone): self
     {
         $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Style>
+     */
+    public function getStyles(): Collection
+    {
+        return $this->styles;
+    }
+
+    public function addStyle(Style $style): self
+    {
+        if (!$this->styles->contains($style)) {
+            $this->styles->add($style);
+            $style->setPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStyle(Style $style): self
+    {
+        if ($this->styles->removeElement($style)) {
+            // set the owning side to null (unless already changed)
+            if ($style->getPlayer() === $this) {
+                $style->setPlayer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Instrument>
+     */
+    public function getInstruments(): Collection
+    {
+        return $this->instruments;
+    }
+
+    public function addInstrument(Instrument $instrument): self
+    {
+        if (!$this->instruments->contains($instrument)) {
+            $this->instruments->add($instrument);
+            $instrument->setPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInstrument(Instrument $instrument): self
+    {
+        if ($this->instruments->removeElement($instrument)) {
+            // set the owning side to null (unless already changed)
+            if ($instrument->getPlayer() === $this) {
+                $instrument->setPlayer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SetList>
+     */
+    public function getSetLists(): Collection
+    {
+        return $this->setLists;
+    }
+
+    public function addSetList(SetList $setList): self
+    {
+        if (!$this->setLists->contains($setList)) {
+            $this->setLists->add($setList);
+            $setList->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSetList(SetList $setList): self
+    {
+        if ($this->setLists->removeElement($setList)) {
+            // set the owning side to null (unless already changed)
+            if ($setList->getOwner() === $this) {
+                $setList->setOwner(null);
+            }
+        }
 
         return $this;
     }
