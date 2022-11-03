@@ -29,13 +29,9 @@ class Instrument
     #[ORM\OneToMany(mappedBy: 'instrument', targetEntity: Status::class)]
     private Collection $statuses;
 
-    #[ORM\OneToMany(mappedBy: 'instrument', targetEntity: Status::class)]
-    private Collection $status;
-
     public function __construct()
     {
         $this->statuses = new ArrayCollection();
-        $this->status = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -82,15 +78,15 @@ class Instrument
     /**
      * @return Collection<int, Status>
      */
-    public function getStatus(): Collection
+    public function getStatuses(): Collection
     {
-        return $this->status;
+        return $this->statuses;
     }
 
     public function addStatus(Status $status): self
     {
-        if (!$this->status->contains($status)) {
-            $this->status->add($status);
+        if (!$this->statuses->contains($status)) {
+            $this->statuses->add($status);
             $status->setInstrument($this);
         }
 
@@ -99,7 +95,7 @@ class Instrument
 
     public function removeStatus(Status $status): self
     {
-        if ($this->status->removeElement($status)) {
+        if ($this->statuses->removeElement($status)) {
             // set the owning side to null (unless already changed)
             if ($status->getInstrument() === $this) {
                 $status->setInstrument(null);
@@ -108,6 +104,4 @@ class Instrument
 
         return $this;
     }
-
-
 }
