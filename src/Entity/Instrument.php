@@ -20,8 +20,6 @@ class Instrument
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $type = null;
 
     #[ORM\ManyToOne(inversedBy: 'instruments')]
     private ?User $player = null;
@@ -51,17 +49,6 @@ class Instrument
         return $this;
     }
 
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(?string $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
 
     public function getPlayer(): ?User
     {
