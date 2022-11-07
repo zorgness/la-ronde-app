@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SetListRepository::class)]
-#[ApiResource()]
+#[ApiResource(order: ["id" => 'DESC'] )]
 class SetList
 {
     #[ORM\Id]
@@ -35,6 +35,7 @@ class SetList
     public function __construct()
     {
         $this->songs = new ArrayCollection();
+        $this->instruments = new ArrayCollection();
     }
 
     public function getId(): ?int

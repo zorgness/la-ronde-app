@@ -23,6 +23,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
@@ -65,12 +66,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $phone = null;
 
     #[ORM\OneToMany(mappedBy: 'player', targetEntity: Style::class)]
+    #[Groups(['read'])]
     private Collection $styles;
 
     #[ORM\OneToMany(mappedBy: 'player', targetEntity: Instrument::class)]
+    #[Groups(['read'])]
     private Collection $instruments;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: SetList::class)]
+    #[Groups(['read'])]
     private Collection $setLists;
 
     public function __construct()
